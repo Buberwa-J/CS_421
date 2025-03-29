@@ -53,6 +53,7 @@ This API allows you to retrieve data on students enrolled in the Software Engine
 
 ---
 
+
 ## Setup
 
 ### Prerequisites
@@ -205,4 +206,4 @@ tail -f storage/logs/laravel.log
 
 This API allows you to manage and fetch student and subject data for the Software Engineering program. It is built on Laravel, which provides a powerful framework for building modern, scalable web applications. The setup process is simple, and the provided endpoints will help you get started with working with students and subjects.
 
-Let me know if you need further clarification or help with any part of the setup!
+Enjoy retrieving student names and the available courses. I hope you build something useful 😅😅😅
