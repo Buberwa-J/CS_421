@@ -6,6 +6,7 @@
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 PROJECT_DIR="/var/www/CS_421"
 LOG_FILE="/var/log/update.log"
+WEB_SERVER="apache2"   # Change to 'nginx' if you're using Nginx
 
 # ===== START LOG =====
 echo "===== Update started at $TIMESTAMP =====" >> $LOG_FILE
