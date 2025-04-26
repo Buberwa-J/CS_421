@@ -202,6 +202,48 @@ tail -f storage/logs/laravel.log
 
 ---
 
+docker_setup:
+  prerequisites:
+    - Docker installed: "https://docs.docker.com/get-docker/"
+    - Docker Compose installed: "https://docs.docker.com/compose/install/"
+  steps:
+    - description: Build and start containers
+      command: "docker-compose up -d --build"
+    - description: Install PHP dependencies inside the app container
+      command: "docker exec -it student-subjects-api-app composer install"
+    - description: Copy the environment file
+      command: "cp .env.example .env"
+    - description: Generate application key
+      command: "docker exec -it student-subjects-api-app php artisan key:generate"
+    - description: Run database migrations
+      command: "docker exec -it student-subjects-api-app php artisan migrate"
+    - description: Seed the database
+      command: "docker exec -it student-subjects-api-app php artisan db:seed"
+    - description: Access API
+      url: "http://localhost/api/students and http://localhost/api/subjects"
+
+bash_scripts:
+  location: "bash_scripts/"
+  make_executable_command: "chmod +x bash_scripts/*.sh"
+  scripts:
+    - name: "update.sh"
+      description: "Updates Ubuntu server and packages"
+      run_command: "bash bash_scripts/update.sh"
+    - name: "backup.sh"
+      description: "Backs up the MySQL database with timestamp"
+      run_command: "bash bash_scripts/backup.sh"
+    - name: "health_check.sh"
+      description: "Checks CPU, Memory, and Disk usage"
+      run_command: "bash bash_scripts/health_check.sh"
+  notes:
+    - "Make sure scripts are executable."
+    - "Edit 'backup.sh' if your database credentials differ from the .env file."
+
+opinions:
+  - "Using Docker and Bash scripts makes deployment much cleaner and professional."
+  - "Scripts can be connected to cron jobs for automation if hosting on servers like AWS."
+
+
 ## Conclusion
 
 This API allows you to manage and fetch student and subject data for the Software Engineering program. It is built on Laravel, which provides a powerful framework for building modern, scalable web applications. The setup process is simple, and the provided endpoints will help you get started with working with students and subjects.
