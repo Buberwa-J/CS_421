@@ -263,8 +263,6 @@ Checks CPU, Memory, and Disk usage
 notes:
 - Make sure scripts are executable.
 - Edit 'backup.sh' if your database credentials differ from the .env file.
-
-opinions:
 - Using Docker and Bash scripts makes deployment much cleaner and professional.
 - Scripts can be connected to cron jobs for automation if hosting on servers like AWS.
 
