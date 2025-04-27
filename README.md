@@ -204,63 +204,69 @@ tail -f storage/logs/laravel.log
 
 ### docker_setup:
 prerequisites:
-- Docker installed: "https://docs.docker.com/get-docker/"
-- Docker Compose installed: "https://docs.docker.com/compose/install/"
-  steps:
-- description: Build and start containers
-  
+- Docker installed: https://docs.docker.com/get-docker/
+- Docker Compose installed: https://docs.docker.com/compose/install/
+
+### Steps:
+Build and start containers
 ```bash
  docker-compose up -d --build
 ```
-- description: Install PHP dependencies inside the app container
+Install PHP dependencies inside the app container
 ```bash
  docker exec -it student-subjects-api-app composer install
 ```
-- description: Copy the environment file
+Copy the environment file
 ```bash
 cp .env.example .env"
 ```
-- description: Generate application key
+Generate application key
 ```bash
   docker exec -it student-subjects-api-app php artisan key:generate
 ```
-- description: Run database migrations
+Run database migrations
 ```bash
   docker exec -it student-subjects-api-app php artisan migrate
 ```
-- description: Seed the database
+Seed the database
 ```bash
   docker exec -it student-subjects-api-app php artisan db:seed
 ```
-- description: Access API
-  url: "http://localhost/api/students and http://localhost/api/subjects"
+Access API
+url: "http://localhost/api/students and http://localhost/api/subjects"
 
 ### bash_scripts:
-location: "bash_scripts/"
-make_executable_command: "chmod +x bash_scripts/*.sh"
-scripts:
-- name: "update.sh"
-description: "Updates Ubuntu server and packages"
+"bash_scripts/"
+```bash
+chmod +x bash_scripts/*.sh"
+```
+
+### Scripts:
+"update.sh"
+Updates Ubuntu server and packages
  ```bash
    bash bash_scripts/update.sh
 ```
-- name: "backup.sh"
-description: "Backs up the MySQL database with timestamp"
+
+"backup.sh"
+Backs up the MySQL database with timestamp
 ```bash
   bash bash_scripts/backup.sh
 ```
-- name: "health_check.sh"
-description: "Checks CPU, Memory, and Disk usage"
+
+"health_check.sh"
+Checks CPU, Memory, and Disk usage
 ```bash
  bash bash_scripts/health_check.sh
 ```
+
 notes:
-- "Make sure scripts are executable."
-- "Edit 'backup.sh' if your database credentials differ from the .env file."
+- Make sure scripts are executable.
+- Edit 'backup.sh' if your database credentials differ from the .env file.
 
 opinions:
-- "Using Docker and Bash scripts makes deployment much cleaner and professional."
-- "Scripts can be connected to cron jobs for automation if hosting on servers like AWS."
+- Using Docker and Bash scripts makes deployment much cleaner and professional.
+- Scripts can be connected to cron jobs for automation if hosting on servers like AWS.
 
 
 ## Conclusion
