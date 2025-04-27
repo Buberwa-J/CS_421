@@ -210,11 +210,11 @@ prerequisites:
 ### Steps:
 Build and start containers
 ```bash
- docker-compose up -d --build
+docker-compose up -d --build
 ```
 Install PHP dependencies inside the app container
 ```bash
- docker exec -it student-subjects-api-app composer install
+docker exec -it student-subjects-api-app composer install
 ```
 Copy the environment file
 ```bash
@@ -222,15 +222,15 @@ cp .env.example .env"
 ```
 Generate application key
 ```bash
-  docker exec -it student-subjects-api-app php artisan key:generate
+docker exec -it student-subjects-api-app php artisan key:generate
 ```
 Run database migrations
 ```bash
-  docker exec -it student-subjects-api-app php artisan migrate
+docker exec -it student-subjects-api-app php artisan migrate
 ```
 Seed the database
 ```bash
-  docker exec -it student-subjects-api-app php artisan db:seed
+docker exec -it student-subjects-api-app php artisan db:seed
 ```
 Access API
 url: "http://localhost/api/students and http://localhost/api/subjects"
@@ -244,20 +244,20 @@ chmod +x bash_scripts/*.sh"
 ### Scripts:
 "update.sh"
 Updates Ubuntu server and packages
- ```bash
-   bash bash_scripts/update.sh
+```bash
+bash bash_scripts/update.sh
 ```
 
 "backup.sh"
 Backs up the MySQL database with timestamp
 ```bash
-  bash bash_scripts/backup.sh
+bash bash_scripts/backup.sh
 ```
 
 "health_check.sh"
 Checks CPU, Memory, and Disk usage
 ```bash
- bash bash_scripts/health_check.sh
+bash bash_scripts/health_check.sh
 ```
 
 notes:
