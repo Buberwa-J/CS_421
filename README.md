@@ -236,25 +236,25 @@ Access API
 url: "http://localhost/api/students and http://localhost/api/subjects"
 
 ### bash_scripts:
-"bash_scripts/"
+bash_scripts/
 ```bash
 chmod +x bash_scripts/*.sh"
 ```
 
 ### Scripts:
-"update.sh"
+update.sh:
 Updates Ubuntu server and packages
 ```bash
 bash bash_scripts/update.sh
 ```
 
-"backup.sh"
+backup.sh:
 Backs up the MySQL database with timestamp
 ```bash
 bash bash_scripts/backup.sh
 ```
 
-"health_check.sh"
+health_check.sh:
 Checks CPU, Memory, and Disk usage
 ```bash
 bash bash_scripts/health_check.sh
