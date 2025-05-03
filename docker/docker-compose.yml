@@ -1,36 +1,89 @@
 version: "3.8"
 
 services:
-    app1:
+    backend:
         build:
             context: .
-            dockerfile: Dockerfile
-        environment:
-            NODE_ID: Laravel-Node-1
+            dockerfile: docker/backend/Dockerfile
+        container_name: backend
+        restart: always
+        volumes:
+            - ./app:/var/www
+        depends_on:
+            - db
         networks:
-            - laravel_net
+            - laravel
 
-    app2:
+    frontend1:
         build:
             context: .
-            dockerfile: Dockerfile
+            dockerfile: docker/frontend/Dockerfile
+        container_name: frontend1
+        restart: always
         environment:
-            NODE_ID: Laravel-Node-2
+            NODE_ID: frontend1
+        volumes:
+            - ./app:/var/www/html
         networks:
-            - laravel_net
+            - laravel
+
+    frontend2:
+        build:
+            context: .
+            dockerfile: docker/frontend/Dockerfile
+        container_name: frontend2
+        restart: always
+        environment:
+            NODE_ID: frontend2
+        volumes:
+            - ./app:/var/www/html
+        networks:
+            - laravel
+
+    frontend3:
+        build:
+            context: .
+            dockerfile: docker/frontend/Dockerfile
+        container_name: frontend3
+        restart: always
+        environment:
+            NODE_ID: frontend3
+        volumes:
+            - ./app:/var/www/html
+        networks:
+            - laravel
 
     haproxy:
         image: haproxy:latest
+        container_name: haproxy
         ports:
-            - "8080:80"
+            - "80:80"
         volumes:
-            - ./docker/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+            - ./docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
         depends_on:
-            - app1
-            - app2
+            - frontend1
+            - frontend2
+            - frontend3
         networks:
-            - laravel_net
+            - laravel
+
+    db:
+        image: mysql:8
+        container_name: mysql
+        restart: always
+        environment:
+            MYSQL_DATABASE: student_subjects
+            MYSQL_ROOT_PASSWORD: your_password
+        ports:
+            - "3306:3306"
+        volumes:
+            - dbdata:/var/lib/mysql
+        networks:
+            - laravel
+
+volumes:
+    dbdata:
 
 networks:
-    laravel_net:
+    laravel:
         driver: bridge
