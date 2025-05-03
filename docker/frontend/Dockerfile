@@ -1,5 +1,6 @@
 FROM php:8.2-apache
 
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -9,21 +10,21 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     zip \
+    libzip-dev \
+    && docker-php-ext-configure zip \
     && docker-php-ext-install pdo pdo_mysql mbstring zip
 
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
-
-WORKDIR /var/www/html
-
-COPY ./app /var/www/html
-
-RUN composer install --no-interaction
-
-# Apache configuration
-COPY docker/frontend/vhost.conf /etc/apache2/sites-available/000-default.conf
-
+# Enable Apache mod_rewrite (Laravel needs it)
 RUN a2enmod rewrite
 
-EXPOSE 80
+# Set working directory
+WORKDIR /var/www/html
 
-CMD ["apache2-foreground"]
+# Copy Laravel files (we’ll copy this in docker-compose)
+COPY . .
+
+# Give permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+EXPOSE 80
