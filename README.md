@@ -202,8 +202,73 @@ tail -f storage/logs/laravel.log
 
 ---
 
+### docker_setup:
+prerequisites:
+- Docker installed: https://docs.docker.com/get-docker/
+- Docker Compose installed: https://docs.docker.com/compose/install/
+
+### Steps:
+Build and start containers
+```bash
+docker-compose up -d --build
+```
+Install PHP dependencies inside the app container
+```bash
+docker exec -it student-subjects-api-app composer install
+```
+Copy the environment file
+```bash
+cp .env.example .env"
+```
+Generate application key
+```bash
+docker exec -it student-subjects-api-app php artisan key:generate
+```
+Run database migrations
+```bash
+docker exec -it student-subjects-api-app php artisan migrate
+```
+Seed the database
+```bash
+docker exec -it student-subjects-api-app php artisan db:seed
+```
+Access API
+url: "http://localhost/api/students and http://localhost/api/subjects"
+
+### bash_scripts:
+bash_scripts/
+```bash
+chmod +x bash_scripts/*.sh"
+```
+
+### Scripts:
+update.sh:
+Updates Ubuntu server and packages
+```bash
+bash bash_scripts/update.sh
+```
+
+backup.sh:
+Backs up the MySQL database with timestamp
+```bash
+bash bash_scripts/backup.sh
+```
+
+health_check.sh:
+Checks CPU, Memory, and Disk usage
+```bash
+bash bash_scripts/health_check.sh
+```
+
+notes:
+- Make sure scripts are executable.
+- Edit 'backup.sh' if your database credentials differ from the .env file.
+- Using Docker and Bash scripts makes deployment much cleaner and professional.
+- Scripts can be connected to cron jobs for automation if hosting on servers like AWS.
+
+
 ## Conclusion
 
 This API allows you to manage and fetch student and subject data for the Software Engineering program. It is built on Laravel, which provides a powerful framework for building modern, scalable web applications. The setup process is simple, and the provided endpoints will help you get started with working with students and subjects.
 
-Enjoy retrieving student names and the available courses. I hope you build something useful 😅😅😅
+Enjoy retrieving student names and the available courses. Go forth and build 🙂
