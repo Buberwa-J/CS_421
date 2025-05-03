@@ -1,39 +1,36 @@
 version: "3.8"
 
 services:
-    app:
+    app1:
         build:
             context: .
-            dockerfile: docker/Dockerfile
-        container_name: laravel-api-app
-        ports:
-            - "8000:80"
-        volumes:
-            - .:/var/www/html
-        depends_on:
-            - db
-        networks:
-            - laravel-network
-
-    db:
-        image: mysql:8.0
-        container_name: laravel-mysql-db
-        restart: unless-stopped
-        ports:
-            - "3306:3306"
+            dockerfile: Dockerfile
         environment:
-            MYSQL_DATABASE: student_subjects
-            MYSQL_USER: root
-            MYSQL_PASSWORD: your_password
-            MYSQL_ROOT_PASSWORD: your_password
-        volumes:
-            - dbdata:/var/lib/mysql
+            NODE_ID: Laravel-Node-1
         networks:
-            - laravel-network
+            - laravel_net
+
+    app2:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        environment:
+            NODE_ID: Laravel-Node-2
+        networks:
+            - laravel_net
+
+    haproxy:
+        image: haproxy:latest
+        ports:
+            - "8080:80"
+        volumes:
+            - ./docker/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+        depends_on:
+            - app1
+            - app2
+        networks:
+            - laravel_net
 
 networks:
-    laravel-network:
+    laravel_net:
         driver: bridge
-
-volumes:
-    dbdata:

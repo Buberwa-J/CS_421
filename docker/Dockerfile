@@ -1,39 +1,34 @@
-# 1. Use the official PHP 8.2 image with Apache
+# Use an official PHP image with Apache
 FROM php:8.2-apache
 
-# 2. Set the working directory inside the container
-WORKDIR /var/www/html
-
-# 3. Install system dependencies for PHP extensions
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    git \
-    curl \
-    libzip-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+    git curl zip unzip libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
-# 4. Enable Apache mod_rewrite for Laravel routing
+# Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# 5. Install Composer globally
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Set working directory
+WORKDIR /var/www/html
 
-# 6. Copy your Laravel project files into the container
+# Copy app source
 COPY . .
 
-# 7. Install PHP dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+# Copy default apache vhost
+COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
-# 8. Set proper permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 9. Expose port 80 to the outside world
-EXPOSE 80
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-# 10. Set the default command to run Apache
-CMD ["apache2-foreground"]
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Set environment variable for container node ID
+ENV NODE_ID="Laravel-App"
+
+# Inject X-Node-ID into every response
+RUN echo 'Header always set X-Node-ID %{NODE_ID}e env=NODE_ID' >> /etc/apache2/apache2.conf
