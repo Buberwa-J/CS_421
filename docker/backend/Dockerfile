@@ -2,7 +2,7 @@
 FROM composer:2.6 AS composer_stage
 WORKDIR /app
 COPY . /app
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+RUN composer install --no-interaction
 
 # Stage 2: Apache with PHP
 FROM php:8.2-apache
