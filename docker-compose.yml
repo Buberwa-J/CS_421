@@ -1,89 +1,57 @@
-version: "3.8"
+version: "3"
 
 services:
+    db:
+        image: mysql:5.7
+        environment:
+            MYSQL_ROOT_PASSWORD: your_password
+            MYSQL_DATABASE: student_subjects
+        networks:
+            - app_network
+
     backend:
         build:
             context: .
             dockerfile: docker/backend/Dockerfile
-        container_name: backend
-        restart: always
-        volumes:
-            - ./app:/var/www
-        depends_on:
-            - db
         networks:
-            - laravel
+            - app_network
 
     frontend1:
         build:
             context: .
             dockerfile: docker/frontend/Dockerfile
-        container_name: frontend1
-        restart: always
-        environment:
-            NODE_ID: frontend1
-        volumes:
-            - ./app:/var/www/html
         networks:
-            - laravel
+            - app_network
+        ports:
+            - "8081:80"
 
     frontend2:
         build:
             context: .
             dockerfile: docker/frontend/Dockerfile
-        container_name: frontend2
-        restart: always
-        environment:
-            NODE_ID: frontend2
-        volumes:
-            - ./app:/var/www/html
         networks:
-            - laravel
+            - app_network
+        ports:
+            - "8082:80"
 
     frontend3:
         build:
             context: .
             dockerfile: docker/frontend/Dockerfile
-        container_name: frontend3
-        restart: always
-        environment:
-            NODE_ID: frontend3
-        volumes:
-            - ./app:/var/www/html
         networks:
-            - laravel
+            - app_network
+        ports:
+            - "8083:80"
 
     haproxy:
         image: haproxy:latest
-        container_name: haproxy
+        networks:
+            - app_network
         ports:
-            - "80:80"
+            - "8080:80"
         volumes:
             - ./docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-        depends_on:
-            - frontend1
-            - frontend2
-            - frontend3
-        networks:
-            - laravel
-
-    db:
-        image: mysql:8
-        container_name: mysql
-        restart: always
-        environment:
-            MYSQL_DATABASE: student_subjects
-            MYSQL_ROOT_PASSWORD: your_password
-        ports:
-            - "3306:3306"
-        volumes:
-            - dbdata:/var/lib/mysql
-        networks:
-            - laravel
-
-volumes:
-    dbdata:
 
 networks:
-    laravel:
+    app_network:
         driver: bridge
