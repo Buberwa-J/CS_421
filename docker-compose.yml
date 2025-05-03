@@ -1,0 +1,89 @@
+version: "3.8"
+
+services:
+    backend:
+        build:
+            context: .
+            dockerfile: docker/backend/Dockerfile
+        container_name: backend
+        restart: always
+        volumes:
+            - ./app:/var/www
+        depends_on:
+            - db
+        networks:
+            - laravel
+
+    frontend1:
+        build:
+            context: .
+            dockerfile: docker/frontend/Dockerfile
+        container_name: frontend1
+        restart: always
+        environment:
+            NODE_ID: frontend1
+        volumes:
+            - ./app:/var/www/html
+        networks:
+            - laravel
+
+    frontend2:
+        build:
+            context: .
+            dockerfile: docker/frontend/Dockerfile
+        container_name: frontend2
+        restart: always
+        environment:
+            NODE_ID: frontend2
+        volumes:
+            - ./app:/var/www/html
+        networks:
+            - laravel
+
+    frontend3:
+        build:
+            context: .
+            dockerfile: docker/frontend/Dockerfile
+        container_name: frontend3
+        restart: always
+        environment:
+            NODE_ID: frontend3
+        volumes:
+            - ./app:/var/www/html
+        networks:
+            - laravel
+
+    haproxy:
+        image: haproxy:latest
+        container_name: haproxy
+        ports:
+            - "80:80"
+        volumes:
+            - ./docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+        depends_on:
+            - frontend1
+            - frontend2
+            - frontend3
+        networks:
+            - laravel
+
+    db:
+        image: mysql:8
+        container_name: mysql
+        restart: always
+        environment:
+            MYSQL_DATABASE: student_subjects
+            MYSQL_ROOT_PASSWORD: your_password
+        ports:
+            - "3306:3306"
+        volumes:
+            - dbdata:/var/lib/mysql
+        networks:
+            - laravel
+
+volumes:
+    dbdata:
+
+networks:
+    laravel:
+        driver: bridge
